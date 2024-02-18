@@ -1,7 +1,13 @@
 function submitWord(event) {
   event.preventDefault(); // Prevent form from submitting the traditional way
-  let word = document.getElementById("WordField").value;
-  let definition = document.getElementById("DefinitionField").value;
+  let word = document.getElementById("WordField").value.trim();
+  let definition = document.getElementById("DefinitionField").value.trim();
+
+  // Input validation: Check if inputs are non-empty and not just numbers
+  if (!word || !definition || !isNaN(word) || !isNaN(definition)) {
+    document.getElementById('submitResult').textContent = "Error: Word and definition must be non-empty strings and cannot be just numbers.";
+    return; // Stop the function if validation fails
+  }
 
   const xhr = new XMLHttpRequest();
   xhr.open("POST", "https://kavinadamserver2lab4comp4537-077a78cd5518.herokuapp.com/api/definitions");
@@ -26,9 +32,15 @@ function submitWord(event) {
   xhr.send(body);
 }
 
+
 function searchWord(event) {
   event.preventDefault(); // Prevent form from submitting the traditional way
-  let word = document.getElementById("WordFieldSearch").value;
+  let word = document.getElementById("WordFieldSearch").value.trim();
+
+  if (!word || !isNaN(word)) {
+    document.getElementById('searchResult').textContent = "Error: Please enter a valid word (non-empty, non-numeric).";
+    return; // Stop the function if validation fails
+  }
 
   const xhr = new XMLHttpRequest();
   xhr.open("GET", `https://kavinadamserver2lab4comp4537-077a78cd5518.herokuapp.com/api/definitions?word=${word}`);
@@ -37,7 +49,7 @@ function searchWord(event) {
     const response = JSON.parse(xhr.responseText);
     const resultElement = document.getElementById('searchResult');
     if (xhr.status === 200) {
-      if (response.definition && response.definition !== "Word not found") {
+      if (response.definition !== undefined && response.definition !== "Word not found") {
         // Display the definition if the word is found
         resultElement.innerHTML = `Definition: ${response.definition}`;
       } else {
@@ -56,4 +68,5 @@ function searchWord(event) {
 
   xhr.send();
 }
+
 
