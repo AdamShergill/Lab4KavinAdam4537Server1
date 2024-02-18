@@ -37,13 +37,15 @@ function searchWord(event) {
     const response = JSON.parse(xhr.responseText);
     const resultElement = document.getElementById('searchResult');
     if (xhr.status === 200) {
-      const definition = response.definition;
-      if (definition !== "Word not found") {
-        resultElement.innerHTML = `Definition: ${definition} <br> Total Requests: ${response.totalRequests} <br> Total Entries: ${response.totalEntries}`;
+      if (response.definition && response.definition !== "Word not found") {
+        // Display the definition if the word is found
+        resultElement.innerHTML = `Definition: ${response.definition}`;
       } else {
-        resultElement.textContent = "Word not found. Please try another word.";
+        // Show a not found message along with request details
+        resultElement.textContent = `Request# ${response.totalRequests}: Word '${word}' not found.`;
       }
     } else {
+      // Handle other errors
       resultElement.textContent = `Error: ${response.error}`;
     }
   };
@@ -54,3 +56,4 @@ function searchWord(event) {
 
   xhr.send();
 }
+
