@@ -13,7 +13,7 @@ function submitWord(event) {
     const response = JSON.parse(xhr.responseText);
     const resultElement = document.getElementById('submitResult');
     if (xhr.status === 200 || xhr.status === 201) {
-      resultElement.textContent = "Word submitted successfully!";
+      resultElement.innerHTML = `Word submitted successfully! <br> Total Requests: ${response.totalRequests} <br> Total Entries: ${response.totalEntries}`;
     } else {
       resultElement.textContent = `Error: ${response.error}`;
     }
@@ -39,7 +39,7 @@ function searchWord(event) {
     if (xhr.status === 200) {
       const definition = response.definition;
       if (definition !== "Word not found") {
-        resultElement.textContent = `Definition: ${definition}`;
+        resultElement.innerHTML = `Definition: ${definition} <br> Total Requests: ${response.totalRequests} <br> Total Entries: ${response.totalEntries}`;
       } else {
         resultElement.textContent = "Word not found. Please try another word.";
       }
