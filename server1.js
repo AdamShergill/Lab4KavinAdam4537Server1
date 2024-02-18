@@ -1,61 +1,56 @@
-function submitWord() {
+function submitWord(event) {
+  event.preventDefault(); // Prevent form from submitting the traditional way
   let word = document.getElementById("WordField").value;
   let definition = document.getElementById("DefinitionField").value;
 
-  // Update the request to use the Heroku URL and HTTPS
   const xhr = new XMLHttpRequest();
   xhr.open("POST", "https://kavinadamserver2lab4comp4537-077a78cd5518.herokuapp.com/api/definitions");
   xhr.setRequestHeader("Content-Type", "application/json");
 
-  const body = JSON.stringify({
-    word: word,
-    definition: definition,
-  });
+  const body = JSON.stringify({ word, definition });
 
   xhr.onload = () => {
-    if (xhr.readyState == 4) {
-      const response = JSON.parse(xhr.responseText);
-      if (xhr.status == 200) {
-        console.log(response);
-        alert("Word submitted successfully!");
-        document.dispatchEvent(
-          new CustomEvent("wordSubmitted", { detail: { word: word } })
-        );
-      } else {
-        // Updated to display error message from the server response
-        alert(`Error: ${response.error}`);
-      }
+    const response = JSON.parse(xhr.responseText);
+    const resultElement = document.getElementById('submitResult');
+    if (xhr.status === 200 || xhr.status === 201) {
+      resultElement.textContent = "Word submitted successfully!";
+    } else {
+      resultElement.textContent = `Error: ${response.error}`;
     }
   };
+
+  xhr.onerror = () => {
+    document.getElementById('submitResult').textContent = "An error occurred during the request.";
+  };
+
   xhr.send(body);
 }
 
-function searchWord() {
-  let word = document.getElementById("WordField").value;
+function searchWord(event) {
+  event.preventDefault(); // Prevent form from submitting the traditional way
+  let word = document.getElementById("WordFieldSearch").value;
 
-  // Update the request to use the Heroku URL and HTTPS
   const xhr = new XMLHttpRequest();
   xhr.open("GET", `https://kavinadamserver2lab4comp4537-077a78cd5518.herokuapp.com/api/definitions?word=${word}`);
 
   xhr.onload = () => {
-    if (xhr.readyState == 4) {
-      const response = JSON.parse(xhr.responseText);
-      if (xhr.status == 200) {
-        console.log(response);
-        const definition = response.definition;
-        if (definition && definition !== "Word not found") {
-          alert(`Definition: ${definition}`);
-        } else {
-          // Changed to display a more user-friendly message
-          alert("Word not found. Please try another word.");
-        }
+    const response = JSON.parse(xhr.responseText);
+    const resultElement = document.getElementById('searchResult');
+    if (xhr.status === 200) {
+      const definition = response.definition;
+      if (definition !== "Word not found") {
+        resultElement.textContent = `Definition: ${definition}`;
       } else {
-        // Updated to display error message from the server response
-        alert(`Error: ${response.error}`);
+        resultElement.textContent = "Word not found. Please try another word.";
       }
+    } else {
+      resultElement.textContent = `Error: ${response.error}`;
     }
   };
+
+  xhr.onerror = () => {
+    document.getElementById('searchResult').textContent = "An error occurred during the request.";
+  };
+
   xhr.send();
 }
-
-// Removed the console.log("sending") as it is not needed

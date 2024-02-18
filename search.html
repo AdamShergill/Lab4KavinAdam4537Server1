@@ -1,18 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
-  </head>
-  <body>
-    <h2>search a word</h2>
-    <form id="myform" onsubmit="searchWord()">
-      <input type="text" id="WordField" placeholder="Word" />
-      <br />
-      <br />
-      <button type="submit">Submit</button>
-    </form>
-  </body>
-  <script src="server1.js"></script>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Search Word</title>
+</head>
+<body>
+  <h2>Search a word</h2>
+  <form id="searchForm" onsubmit="searchWord(event)">
+    <input type="text" id="WordFieldSearch" placeholder="Word" required />
+    <button type="submit">Search</button>
+  </form>
+  <div id="searchResult"></div>
+
+  <script src="./server1.js"></script>
+</body>
 </html>
