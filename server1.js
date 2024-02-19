@@ -41,49 +41,54 @@ function submitWord(event) {
   xhr.send(body);
 }
 
-// Prevents the default form submission to handle it with AJAX for search
 function searchWord(event) {
-  event.preventDefault(); // Prevent form from submitting the traditional way
+  event.preventDefault(); // Prevents the default form submission action.
 
-    // Trims whitespace and retrieves the search input value
+  // Trims whitespace from the input and retrieves the value.
   let word = document.getElementById("WordFieldSearch").value.trim();
 
-    // Validates the input to ensure it is non-empty and not numeric
+  // Input validation: Ensures the input is not empty and not numeric.
   if (!word || !isNaN(word)) {
     document.getElementById('searchResult').textContent = "Error: Please enter a valid word (non-empty, non-numeric).";
-    return; // Stop the function if validation fails
+    return; // Stops execution if validation fails.
   }
 
-    // Initializes a new XMLHttpRequest for asynchronous request
+  // Initializes a new XMLHttpRequest object for asynchronous HTTP request.
   const xhr = new XMLHttpRequest();
+  // Configures the request: Method (GET), URL, and asynchronous flag (true by default).
   xhr.open("GET", `https://kavinadamserver2lab4comp4537-077a78cd5518.herokuapp.com/api/definitions?word=${word}`);
 
-  // Defines what happens when the response is successfully received
+  // Defines what happens when the request receives a response.
   xhr.onload = () => {
-    const response = JSON.parse(xhr.responseText); // Parses the JSON response
+    // Parses the JSON formatted response text.
+    const response = JSON.parse(xhr.responseText);
+    // Selects the element to display the search result.
     const resultElement = document.getElementById('searchResult');
-     // Displays definition if found, else shows a not found message
+
+    // Checks the HTTP status code to determine the result of the request.
     if (xhr.status === 200) {
+      // The request was successful, checks if the word was found.
       if (response.definition !== undefined && response.definition !== "Word not found") {
-        // Display the definition if the word is found
+        // Word is found: Displays the definition.
         resultElement.innerHTML = `Definition: ${response.definition}`;
       } else {
-        // Show a not found message along with request details
+        // Word is not found: Displays a message indicating the word is not found along with the request number.
         resultElement.textContent = `Request# ${response.totalRequests}: Word '${word}' not found.`;
       }
     } else {
-      // Handle other errors
+      // Handles HTTP error responses (e.g., 404, 500) by displaying the error message.
       resultElement.textContent = `Error: ${response.error}`;
     }
   };
 
-  // Defines what happens in case of an error during the request
+  // Defines what happens in case of an error with the request (network error, etc.).
   xhr.onerror = () => {
     document.getElementById('searchResult').textContent = "An error occurred during the request.";
   };
-  
-// Sends the request to search for the word
+
+  // Sends the request.
   xhr.send();
 }
+
 
 
